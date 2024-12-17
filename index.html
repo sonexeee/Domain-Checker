@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Domain Registration</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background-color: #f0f0f0;
+    }
+    .container {
+      width: 400px;
+      padding: 20px;
+      background-color: white;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    h1 {
+      text-align: center;
+    }
+    input[type="text"] {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      font-size: 1.1em;
+      border-radius: 8px;
+      border: 1px solid #ddd;
+    }
+    button {
+      width: 100%;
+      padding: 12px;
+      font-size: 1.2em;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+    button:hover {
+      background-color: #45a049;
+    }
+    #availability {
+      margin-top: 10px;
+      font-size: 1.1em;
+      color: red;
+    }
+    #registerButton {
+      margin-top: 20px;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1>Domain Registration</h1>
+    <input type="text" id="domainName" placeholder="Enter your domain name">
+    <button onclick="checkAvailability()">Check Availability</button>
+    <div id="availability"></div>
+    <button id="registerButton" onclick="registerDomain()">Register Domain</button>
+  </div>
+
+  <script>
+    // Check domain availability
+    async function checkAvailability() {
+      const domain = document.getElementById('domainName').value;
+      const availabilityMessage = document.getElementById('availability');
+      
+      if (!domain) {
+        alert('Please enter a domain name!');
+        return;
+      }
+
+      const response = await fetch(`http://localhost:3000/check-domain?domain=${domain}`);
+      const data = await response.json();
+
+      if (data.available) {
+        availabilityMessage.innerHTML = `Domain ${domain} is available!`;
+        document.getElementById('registerButton').style.display = 'block';
+      } else {
+        availabilityMessage.innerHTML = `Sorry, ${domain} is already taken.`;
+        document.getElementById('registerButton').style.display = 'none';
+      }
+    }
+
+    // Register domain (simulated)
+    async function registerDomain() {
+      const domain = document.getElementById('domainName').value;
+      const contactInfo = {
+        name: "John Doe",
+        email: "john.doe@example.com",
+        phone: "1234567890",
+        address: "123 Street Name, City, Country"
+      };
+
+      const response = await fetch('http://localhost:3000/register-domain', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ domain, contactInfo })
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        alert('Domain successfully registered!');
+      } else {
+        alert('Domain registration failed!');
+      }
+    }
+  </script>
+
+</body>
+</html>
